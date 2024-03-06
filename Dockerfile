@@ -1,8 +1,10 @@
 FROM ubuntu:23.10 AS install-stage
 ARG TARGETPLATFORM
-ARG ARCH
 WORKDIR /tmp
 ENV DEBIAN_FRONTEND=noninteractive
+ENV ARCH=amd64
+RUN if [[ "$TARGETPLATFORM" == "linux/arm64" ]]; then ARCH="arm64"; fi
+
 # RUN apt update && apt -y upgrade && apt -y install wget unzip curl tree git jq gettext
 
 # RUN wget https://releases.hashicorp.com/terraform/1.7.3/terraform_1.7.3_linux_amd64.zip -O terraform.zip
