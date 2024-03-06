@@ -34,10 +34,12 @@ FROM ubuntu:23.10
 ARG TARGETPLATFORM
 ENV DEBIAN_FRONTEND=noninteractive
 COPY --from=install-stage /usr/local/bin /usr/local/bin
+
+RUN echo "target platform: $TARGETPLATFORM" > /etc/arch && \
+    echo "arch: $(echo $TARGETPLATFORM | cut -d '/' -f2)" >> /etc/arch
+
 RUN apt update && apt -y upgrade && apt -y install sudo zsh wget unzip curl tree file git jq gettext ca-certificates \ 
 		nano vim default-jre ansible --no-install-suggests --no-install-recommends && ansible-galaxy collection install community.kubernetes
-
-RUN apt update && apt -y install file
 
 RUN useradd -m andy && adduser andy sudo
 RUN mkdir -p /etc/sudoers.d/ && echo 'andy ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/andy
@@ -62,10 +64,5 @@ RUN echo "export PATH=\$HOME/bin:/usr/local/bin:\$PATH" >> $HOME/.zshrc && \
     echo "source \$ZSH/oh-my-zsh.sh" >> $HOME/.zshrc && \
     echo "[[ \$commands[kubectl] ]] && source <(kubectl completion zsh)" >> $HOME/.zshrc && \
     echo "alias k=\"kubectl\"" >> $HOME/.zshrc
-
-RUN echo "ARCH=$(echo $TARGETPLATFORM | cut -d '/' -f2)" > /env.sh
-
-RUN . /env.sh && echo "target platform: $TARGETPLATFORM" > /etc/arch && \
-    echo "arch: $ARCH" >> /etc/arch
 
 CMD ["/bin/zsh"]
