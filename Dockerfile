@@ -60,7 +60,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 RUN echo "ARCH=$(echo $TARGETPLATFORM | cut -d '/' -f2)" > /env.sh
 
-RUN source /env.sh && echo "target: $TARGETPLATFORM" > /root/log && \
+RUN . /env.sh && echo "target: $TARGETPLATFORM" > /root/log && \
     echo "arch: $ARCH" >> /root/log
 
 CMD ["/bin/bash"]
