@@ -1,4 +1,6 @@
 FROM ubuntu:23.10 AS install-stage
+ARG TARGETPLATFORM
+ARG ARCH
 WORKDIR /tmp
 ENV DEBIAN_FRONTEND=noninteractive
 # RUN apt update && apt -y upgrade && apt -y install wget unzip curl tree git jq gettext
