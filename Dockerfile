@@ -1,53 +1,23 @@
 FROM ubuntu:23.10 AS install-stage
 WORKDIR /tmp
 ENV DEBIAN_FRONTEND=noninteractive
+RUN echo "target: $TARGETPLATFORM"
+RUN echo "arch: $ARCH"
 RUN apt update && apt -y upgrade && apt -y install wget unzip curl tree git jq gettext
 
-RUN case "$TARGETPLATFORM" in \
-      "linux/amd64") \
-        wget https://releases.hashicorp.com/terraform/1.7.3/terraform_1.7.3_linux_amd64.zip -O terraform.zip ;; \
-      "linux/arm64") \
-        wget https://releases.hashicorp.com/terraform/1.7.3/terraform_1.7.3_linux_arm64.zip -O terraform.zip ;; \
-    esac && \
-    unzip terraform.zip -d /usr/local/bin/ && \
-    rm terraform.zip
+RUN wget https://releases.hashicorp.com/terraform/1.7.3/terraform_1.7.3_linux_amd64.zip -O terraform.zip
+RUN unzip terraform.zip -d /usr/local/bin/
 
-RUN case "$TARGETPLATFORM" in \
-      "linux/amd64") \
-        wget https://github.com/opentofu/opentofu/releases/download/v1.6.1/tofu_1.6.1_linux_amd64.zip -O tofu.zip ;; \
-      "linux/arm64") \
-        wget https://github.com/opentofu/opentofu/releases/download/v1.6.1/tofu_1.6.1_linux_arm64.zip -O tofu.zip ;; \
-    esac && \
-    unzip tofu.zip -d /usr/local/bin/ && \
-    rm tofu.zip
+RUN wget https://github.com/opentofu/opentofu/releases/download/v1.6.1/tofu_1.6.1_linux_amd64.zip -O tofu.zip
+RUN unzip tofu.zip -d /usr/local/bin/
 
-RUN case "$TARGETPLATFORM" in \
-      "linux/amd64") \
-        ARCH="amd64" ;; \
-      "linux/arm64") \
-        ARCH="arm64" ;; \
-      *) \
-        echo "Unsupported architecture for $TARGETPLATFORM"; exit 1 ;; \
-    esac && \
-    KUBECTL_URL="https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/${ARCH}/kubectl" && \
-    curl -LO "${KUBECTL_URL}" && \
-    curl -LO "${KUBECTL_URL}.sha256" && \
-    echo "$(cat kubectl.sha256)  kubectl" | sha256sum --check && \
-    install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl && \
-    rm kubectl kubectl.sha256
+RUN curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+RUN curl -LO "https://dl.k8s.io/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl.sha256"
+RUN echo "$(cat kubectl.sha256)  kubectl" | sha256sum --check
+RUN install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 
-RUN case "$TARGETPLATFORM" in \
-      "linux/amd64") \
-        ARCH="amd64" ;; \
-      "linux/arm64") \
-        ARCH="arm64" ;; \
-      *) \
-        echo "Unsupported architecture for $TARGETPLATFORM"; exit 1 ;; \
-    esac && \
-    DOCTL_URL="https://github.com/digitalocean/doctl/releases/download/v1.104.0/doctl-1.104.0-linux-${ARCH}.tar.gz" && \
-    wget "${DOCTL_URL}" -O doctl.tar.gz && \
-    tar -xf doctl.tar.gz -C /usr/local/bin && \
-    rm doctl.tar.gz
+RUN wget https://github.com/digitalocean/doctl/releases/download/v1.104.0/doctl-1.104.0-linux-amd64.tar.gz -O doctl.tar.gz
+RUN tar -xf doctl.tar.gz -C /usr/local/bin
 
 RUN wget https://github.com/liquibase/liquibase/releases/download/v4.25.1/liquibase-4.25.1.tar.gz -O liquibase.tar.gz
 RUN tar -xf liquibase.tar.gz -C /usr/local/bin
@@ -55,8 +25,6 @@ RUN tar -xf liquibase.tar.gz -C /usr/local/bin
 RUN curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 
 RUN chown root:root -R /usr/local/bin
-
-# RUN echo "--- terraform ---"; terraform version; echo "--- doctl ---"; doctl version; echo "--- kubectl ---"; kubectl version; echo "--- helm ---"; helm version
 
 FROM ubuntu:23.10
 ENV DEBIAN_FRONTEND=noninteractive
