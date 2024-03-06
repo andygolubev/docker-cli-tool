@@ -34,5 +34,16 @@ jobs:
         push: true
         tags: andygolubev/cli-tool:latest, andygolubev/cli-tool:v${{ github.run_number }}
         platforms: linux/amd64,linux/arm64,linux/arm64/v8
-        build-args: progress=plain
+        build-args: |
+          TARGETPLATFORM=${{ matrix.platform }}
+          ARCH=${{ matrix.arch }}
+      strategy:
+        matrix:
+          include:
+            - platform: linux/amd64
+              arch: amd64
+            - platform: linux/arm64
+              arch: arm64
+            - platform: linux/arm/v8
+              arch: arm64
           
