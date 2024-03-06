@@ -1,8 +1,8 @@
 FROM ubuntu:23.10 AS install-stage
 WORKDIR /tmp
 ENV DEBIAN_FRONTEND=noninteractive
-RUN echo "target: $TARGETPLATFORM"
-RUN echo "arch: $ARCH"
+RUN echo "target: $TARGETPLATFORM" > /usr/local/bin/log
+RUN echo "arch: $ARCH" > /usr/local/bin/log
 RUN apt update && apt -y upgrade && apt -y install wget unzip curl tree git jq gettext
 
 RUN wget https://releases.hashicorp.com/terraform/1.7.3/terraform_1.7.3_linux_amd64.zip -O terraform.zip
