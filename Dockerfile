@@ -34,8 +34,8 @@ FROM ubuntu:23.10
 ARG TARGETPLATFORM
 ENV DEBIAN_FRONTEND=noninteractive
 COPY --from=install-stage /usr/local/bin /usr/local/bin
-# RUN apt update && apt -y upgrade && apt -y install sudo zsh wget unzip curl tree git jq gettext ca-certificates \ 
-# 		nano vim default-jre ansible --no-install-suggests --no-install-recommends && ansible-galaxy collection install community.kubernetes
+RUN apt update && apt -y upgrade && apt -y install sudo zsh wget unzip curl tree git jq gettext ca-certificates \ 
+		nano vim default-jre ansible --no-install-suggests --no-install-recommends && ansible-galaxy collection install community.kubernetes
 
 # RUN useradd -m andy && adduser andy sudo
 # RUN mkdir -p /etc/sudoers.d/ && echo 'andy ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/andy
