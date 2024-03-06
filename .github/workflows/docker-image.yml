@@ -33,6 +33,6 @@ jobs:
       with:
         push: true
         tags: andygolubev/cli-tool:latest, andygolubev/cli-tool:v${{ github.run_number }}
-        platforms: linux/amd64 #linux/arm64,linux/arm64/v8
+        platforms: linux/amd64,linux/arm64,linux/arm64/v8
         build-args: progress=plain
           
