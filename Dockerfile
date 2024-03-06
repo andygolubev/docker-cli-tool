@@ -34,38 +34,38 @@ FROM ubuntu:23.10
 ARG TARGETPLATFORM
 ENV DEBIAN_FRONTEND=noninteractive
 COPY --from=install-stage /usr/local/bin /usr/local/bin
-# RUN apt update && apt -y upgrade && apt -y install sudo zsh wget unzip curl tree git jq gettext ca-certificates \ 
-# 		nano vim default-jre ansible --no-install-suggests --no-install-recommends && ansible-galaxy collection install community.kubernetes
+RUN apt update && apt -y upgrade && apt -y install sudo zsh wget unzip curl tree file git jq gettext ca-certificates \ 
+		nano vim default-jre ansible --no-install-suggests --no-install-recommends && ansible-galaxy collection install community.kubernetes
 
 RUN apt update && apt -y install file
 
-# RUN useradd -m andy && adduser andy sudo
-# RUN mkdir -p /etc/sudoers.d/ && echo 'andy ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/andy
+RUN useradd -m andy && adduser andy sudo
+RUN mkdir -p /etc/sudoers.d/ && echo 'andy ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/andy
 
-# USER andy
-# ENV SHELL=/bin/zsh
-# ENV HOME=/home/andy
-# WORKDIR $HOME
+USER andy
+ENV SHELL=/bin/zsh
+ENV HOME=/home/andy
+WORKDIR $HOME
 
-# RUN sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+RUN sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
 
-# RUN git clone https://github.com/zsh-users/zsh-autosuggestions $HOME/.oh-my-zsh/custom/plugins/zsh-autosuggestions && \
-#     git clone https://github.com/marlonrichert/zsh-autocomplete $HOME/.oh-my-zsh/custom/plugins/zsh-autocomplete && \
-#     git clone https://github.com/zsh-users/zsh-syntax-highlighting $HOME/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting && \
-#     git clone https://github.com/zdharma-continuum/fast-syntax-highlighting $HOME/.oh-my-zsh/custom/plugins/fast-syntax-highlighting
+RUN git clone https://github.com/zsh-users/zsh-autosuggestions $HOME/.oh-my-zsh/custom/plugins/zsh-autosuggestions && \
+    git clone https://github.com/marlonrichert/zsh-autocomplete $HOME/.oh-my-zsh/custom/plugins/zsh-autocomplete && \
+    git clone https://github.com/zsh-users/zsh-syntax-highlighting $HOME/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting && \
+    git clone https://github.com/zdharma-continuum/fast-syntax-highlighting $HOME/.oh-my-zsh/custom/plugins/fast-syntax-highlighting
 
-# RUN echo "export PATH=\$HOME/bin:/usr/local/bin:\$PATH" >> $HOME/.zshrc && \
-#     echo "export ZSH=\"\$HOME/.oh-my-zsh\"" >> $HOME/.zshrc && \
-#     echo "ZSH_THEME=\"robbyrussell\"" >> $HOME/.zshrc && \
-#     echo "zstyle ':omz:update' mode disabled" >> $HOME/.zshrc && \
-#     echo "plugins=(git zsh-autosuggestions zsh-autocomplete zsh-syntax-highlighting fast-syntax-highlighting)" >> $HOME/.zshrc && \
-#     echo "source \$ZSH/oh-my-zsh.sh" >> $HOME/.zshrc && \
-#     echo "[[ \$commands[kubectl] ]] && source <(kubectl completion zsh)" >> $HOME/.zshrc && \
-#     echo "alias k=\"kubectl\"" >> $HOME/.zshrc
+RUN echo "export PATH=\$HOME/bin:/usr/local/bin:\$PATH" >> $HOME/.zshrc && \
+    echo "export ZSH=\"\$HOME/.oh-my-zsh\"" >> $HOME/.zshrc && \
+    echo "ZSH_THEME=\"robbyrussell\"" >> $HOME/.zshrc && \
+    echo "zstyle ':omz:update' mode disabled" >> $HOME/.zshrc && \
+    echo "plugins=(git zsh-autosuggestions zsh-autocomplete zsh-syntax-highlighting fast-syntax-highlighting)" >> $HOME/.zshrc && \
+    echo "source \$ZSH/oh-my-zsh.sh" >> $HOME/.zshrc && \
+    echo "[[ \$commands[kubectl] ]] && source <(kubectl completion zsh)" >> $HOME/.zshrc && \
+    echo "alias k=\"kubectl\"" >> $HOME/.zshrc
 
 RUN echo "ARCH=$(echo $TARGETPLATFORM | cut -d '/' -f2)" > /env.sh
 
 RUN . /env.sh && echo "target platform: $TARGETPLATFORM" > /etc/arch && \
     echo "arch: $ARCH" >> /etc/arch
 
-CMD ["/bin/bash"]
+CMD ["/bin/zsh"]
