@@ -1,9 +1,8 @@
 FROM ubuntu:23.10 AS install-stage
 ARG TARGETPLATFORM
-ARG ARCH=
 WORKDIR /tmp
 ENV DEBIAN_FRONTEND=noninteractive
-# ENV ARCH=amd64
+ENV ARCH=amd64
 # RUN if [[ "$TARGETPLATFORM" == "linux/arm64" ]]; then ARCH="arm64"; fi
 
 # RUN apt update && apt -y upgrade && apt -y install wget unzip curl tree git jq gettext
@@ -60,6 +59,6 @@ ENV DEBIAN_FRONTEND=noninteractive
 #     echo "alias k=\"kubectl\"" >> $HOME/.zshrc
 
 RUN echo "target: $TARGETPLATFORM" >> /root/log
-RUN echo "arch: $ARCH" >> /root/log
+RUN [[ "$TARGETPLATFORM" == "linux/arm64" ]] && ARCH="arm64" && echo "arch: $ARCH" >> /root/log
 
 CMD ["/bin/bash"]
