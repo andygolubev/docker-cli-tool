@@ -28,11 +28,11 @@ RUN tar -xf liquibase.tar.gz -C /usr/local/bin
 
 RUN curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 
-# RUN chown root:root -R /usr/local/bin
+RUN chown root:root -R /usr/local/bin
 
-# FROM ubuntu:23.10
-# ENV DEBIAN_FRONTEND=noninteractive
-# COPY --from=install-stage /usr/local/bin /usr/local/bin
+FROM ubuntu:23.10
+ENV DEBIAN_FRONTEND=noninteractive
+COPY --from=install-stage /usr/local/bin /usr/local/bin
 # RUN apt update && apt -y upgrade && apt -y install sudo zsh wget unzip curl tree git jq gettext ca-certificates \ 
 # 		nano vim default-jre ansible --no-install-suggests --no-install-recommends && ansible-galaxy collection install community.kubernetes
 
@@ -62,7 +62,7 @@ RUN curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | b
 
 RUN echo "ARCH=$(echo $TARGETPLATFORM | cut -d '/' -f2)" > /env.sh
 
-RUN . /env.sh && echo "target: $TARGETPLATFORM" > /root/log && \
-    echo "arch: $ARCH" >> /root/log
+RUN . /env.sh && echo "target platform: $TARGETPLATFORM" > /etc/arch && \
+    echo "arch: $ARCH" >> /etc/arch
 
 CMD ["/bin/bash"]
