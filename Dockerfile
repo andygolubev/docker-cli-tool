@@ -58,7 +58,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 #     echo "[[ \$commands[kubectl] ]] && source <(kubectl completion zsh)" >> $HOME/.zshrc && \
 #     echo "alias k=\"kubectl\"" >> $HOME/.zshrc
 
-RUN "ARCH=$(echo $TARGETPLATFORM | cut -d '/' -f2)" > /env.sh && chmod +x /env.sh
+RUN echo "ARCH=$(echo $TARGETPLATFORM | cut -d '/' -f2)" > /env.sh && chmod +x /env.sh
 
 RUN /env.sh && echo "target: $TARGETPLATFORM" > /root/log && \
     echo "arch: $ARCH" >> /root/log
