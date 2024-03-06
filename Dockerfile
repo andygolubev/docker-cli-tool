@@ -31,6 +31,7 @@ RUN curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | b
 RUN chown root:root -R /usr/local/bin
 
 FROM ubuntu:23.10
+ARG TARGETPLATFORM
 ENV DEBIAN_FRONTEND=noninteractive
 COPY --from=install-stage /usr/local/bin /usr/local/bin
 # RUN apt update && apt -y upgrade && apt -y install sudo zsh wget unzip curl tree git jq gettext ca-certificates \ 
