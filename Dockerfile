@@ -1,32 +1,33 @@
 FROM ubuntu:23.10 AS install-stage
 ARG TARGETPLATFORM
+ARG ARCH=
 WORKDIR /tmp
 ENV DEBIAN_FRONTEND=noninteractive
-ENV ARCH=amd64
-RUN if [[ "$TARGETPLATFORM" == "linux/arm64" ]]; then ARCH="arm64"; fi
+# ENV ARCH=amd64
+# RUN if [[ "$TARGETPLATFORM" == "linux/arm64" ]]; then ARCH="arm64"; fi
 
-RUN apt update && apt -y upgrade && apt -y install wget unzip curl tree git jq gettext
+# RUN apt update && apt -y upgrade && apt -y install wget unzip curl tree git jq gettext
 
-RUN wget https://releases.hashicorp.com/terraform/1.7.3/terraform_1.7.3_linux_${ARCH}.zip -O terraform.zip
-RUN unzip terraform.zip -d /usr/local/bin/
+# RUN wget https://releases.hashicorp.com/terraform/1.7.3/terraform_1.7.3_linux_${ARCH}.zip -O terraform.zip
+# RUN unzip terraform.zip -d /usr/local/bin/
 
-RUN wget https://github.com/opentofu/opentofu/releases/download/v1.6.1/tofu_1.6.1_linux_${ARCH}.zip -O tofu.zip
-RUN unzip tofu.zip -d /usr/local/bin/
+# RUN wget https://github.com/opentofu/opentofu/releases/download/v1.6.1/tofu_1.6.1_linux_${ARCH}.zip -O tofu.zip
+# RUN unzip tofu.zip -d /usr/local/bin/
 
-RUN curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/${ARCH}/kubectl"
-RUN curl -LO "https://dl.k8s.io/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/${ARCH}/kubectl.sha256"
-RUN echo "$(cat kubectl.sha256)  kubectl" | sha256sum --check
-RUN install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+# RUN curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/${ARCH}/kubectl"
+# RUN curl -LO "https://dl.k8s.io/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/${ARCH}/kubectl.sha256"
+# RUN echo "$(cat kubectl.sha256)  kubectl" | sha256sum --check
+# RUN install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 
-RUN wget https://github.com/digitalocean/doctl/releases/download/v1.104.0/doctl-1.104.0-linux-${ARCH}.tar.gz -O doctl.tar.gz
-RUN tar -xf doctl.tar.gz -C /usr/local/bin
+# RUN wget https://github.com/digitalocean/doctl/releases/download/v1.104.0/doctl-1.104.0-linux-${ARCH}.tar.gz -O doctl.tar.gz
+# RUN tar -xf doctl.tar.gz -C /usr/local/bin
 
-RUN wget https://github.com/liquibase/liquibase/releases/download/v4.25.1/liquibase-4.25.1.tar.gz -O liquibase.tar.gz
-RUN tar -xf liquibase.tar.gz -C /usr/local/bin
+# RUN wget https://github.com/liquibase/liquibase/releases/download/v4.25.1/liquibase-4.25.1.tar.gz -O liquibase.tar.gz
+# RUN tar -xf liquibase.tar.gz -C /usr/local/bin
 
-RUN curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+# RUN curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 
-RUN chown root:root -R /usr/local/bin
+# RUN chown root:root -R /usr/local/bin
 
 # FROM ubuntu:23.10
 # ENV DEBIAN_FRONTEND=noninteractive
@@ -61,4 +62,4 @@ RUN chown root:root -R /usr/local/bin
 RUN echo "target: $TARGETPLATFORM" >> /root/log
 RUN echo "arch: $ARCH" >> /root/log
 
-CMD ["/bin/zsh"]
+CMD ["/bin/bash"]
