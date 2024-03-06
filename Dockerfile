@@ -1,8 +1,6 @@
 FROM ubuntu:23.10 AS install-stage
 WORKDIR /tmp
 ENV DEBIAN_FRONTEND=noninteractive
-RUN echo "target: $TARGETPLATFORM" > /usr/local/bin/log
-RUN echo "arch: $ARCH" > /usr/local/bin/log
 RUN apt update && apt -y upgrade && apt -y install wget unzip curl tree git jq gettext
 
 RUN wget https://releases.hashicorp.com/terraform/1.7.3/terraform_1.7.3_linux_amd64.zip -O terraform.zip
@@ -55,5 +53,8 @@ RUN echo "export PATH=\$HOME/bin:/usr/local/bin:\$PATH" >> $HOME/.zshrc && \
     echo "source \$ZSH/oh-my-zsh.sh" >> $HOME/.zshrc && \
     echo "[[ \$commands[kubectl] ]] && source <(kubectl completion zsh)" >> $HOME/.zshrc && \
     echo "alias k=\"kubectl\"" >> $HOME/.zshrc
+
+RUN echo "target: $TARGETPLATFORM" > /usr/local/bin/log
+RUN echo "arch: $ARCH" > /usr/local/bin/log
 
 CMD ["/bin/zsh"]
