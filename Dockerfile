@@ -39,7 +39,7 @@ RUN echo "target platform: $TARGETPLATFORM" > /etc/arch && \
     echo "arch: $(echo $TARGETPLATFORM | cut -d '/' -f2)" >> /etc/arch
 
 RUN apt update && apt -y upgrade && apt -y install sudo zsh wget unzip curl tree file git jq gettext ca-certificates \ 
-		nano vim default-jre ansible --no-install-suggests --no-install-recommends && ansible-galaxy collection install community.kubernetes
+		nano vim default-jre ansible awscli --no-install-suggests --no-install-recommends && ansible-galaxy collection install community.kubernetes
 
 RUN useradd -m andy && adduser andy sudo
 RUN mkdir -p /etc/sudoers.d/ && echo 'andy ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/andy
